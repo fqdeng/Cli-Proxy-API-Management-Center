@@ -72,7 +72,11 @@ const getIcon = (icon: string | { light: string; dark: string }, theme: 'light' 
   return typeof icon === 'string' ? icon : icon[theme];
 };
 
-export function OAuthPage() {
+interface OAuthPageProps {
+  donate? : boolean
+}
+
+export function OAuthPage({  donate=false }: OAuthPageProps) {
   const { t } = useTranslation();
   const { showNotification } = useNotificationStore();
   const resolvedTheme = useThemeStore((state) => state.resolvedTheme);
@@ -306,7 +310,11 @@ export function OAuthPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>{t('nav.oauth', { defaultValue: 'OAuth' })}</h1>
+      <h1 className={styles.pageTitle}>
+        {donate
+          ? t('nav.donate', { defaultValue: 'Donate' })
+          : t('nav.oauth', { defaultValue: 'OAuth' })}
+      </h1>
 
       <div className={styles.content}>
         {PROVIDERS.map((provider) => {

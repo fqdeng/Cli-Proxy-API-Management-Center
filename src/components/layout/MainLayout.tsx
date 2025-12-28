@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -100,6 +100,18 @@ const headerIcons = {
       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
     </svg>
   ),
+  donate: (
+    <svg {...headerIconProps}>
+      {/* 箱子的主体：开口向上的容器 */}
+      <path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7" />
+
+      {/* 箱子的顶部边缘线 */}
+      <path d="M3 12h18" />
+
+      {/* 上方落入的爱心 (替代原图的箭头和文字，表示爱心捐赠) */}
+      <path d="M12 3a2.6 2.6 0 0 0-2.6 2.6c0 1.8 2.6 3.9 2.6 3.9s2.6-2.1 2.6-3.9A2.6 2.6 0 0 0 12 3Z" />
+    </svg>
+  ),
   sun: (
     <svg {...headerIconProps}>
       <circle cx="12" cy="12" r="4" />
@@ -126,7 +138,13 @@ const headerIcons = {
         </clipPath>
       </defs>
       <circle cx="12" cy="12" r="4" />
-      <circle cx="12" cy="12" r="4" clipPath="url(#mainLayoutAutoThemeSunLeftHalf)" fill="currentColor" />
+      <circle
+        cx="12"
+        cy="12"
+        r="4"
+        clipPath="url(#mainLayoutAutoThemeSunLeftHalf)"
+        fill="currentColor"
+      />
       <path d="M12 2v2" />
       <path d="M12 20v2" />
       <path d="M4.93 4.93l1.41 1.41" />
@@ -177,6 +195,7 @@ export function MainLayout() {
   const { showNotification } = useNotificationStore();
   const location = useLocation();
 
+  const navigate = useNavigate();
   const apiBase = useAuthStore((state) => state.apiBase);
   const serverVersion = useAuthStore((state) => state.serverVersion);
   const serverBuildDate = useAuthStore((state) => state.serverBuildDate);
@@ -480,6 +499,9 @@ export function MainLayout() {
                 : theme === 'dark'
                   ? headerIcons.moon
                   : headerIcons.sun}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/donate')} title={t('header.logout')}>
+              {headerIcons.donate}
             </Button>
             <Button variant="ghost" size="sm" onClick={logout} title={t('header.logout')}>
               {headerIcons.logout}

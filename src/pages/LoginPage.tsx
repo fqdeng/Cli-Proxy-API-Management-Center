@@ -83,6 +83,9 @@ export function LoginPage() {
 
   return (
     <div className="login-page">
+      <Button className="donate-button" onClick={() => navigate('/donate')}>
+        {t('nav.donate', { defaultValue: 'Donate' })}
+      </Button>
       <div className="login-card">
         <div className="login-header">
           <div className="login-title-row">
