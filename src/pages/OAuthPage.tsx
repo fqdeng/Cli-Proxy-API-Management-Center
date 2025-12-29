@@ -317,7 +317,7 @@ export function OAuthPage({  donate=false }: OAuthPageProps) {
       </h1>
 
       <div className={styles.content}>
-        {PROVIDERS.map((provider) => {
+        {(donate ? PROVIDERS.filter((p) => p.id === 'antigravity') : PROVIDERS).map((provider) => {
           const state = states[provider.id] || {};
           const canSubmitCallback = CALLBACK_SUPPORTED.includes(provider.id) && Boolean(state.url);
           return (
@@ -425,162 +425,166 @@ export function OAuthPage({  donate=false }: OAuthPageProps) {
         })}
 
         {/* Vertex JSON 登录 */}
-        <Card
-          title={
-            <span className={styles.cardTitle}>
-              <img src={iconVertex} alt="" className={styles.cardTitleIcon} />
-              {t('vertex_import.title')}
-            </span>
-          }
-          extra={
-            <Button onClick={handleVertexImport} loading={vertexState.loading}>
-              {t('vertex_import.import_button')}
-            </Button>
-          }
-        >
-          <div className="hint">{t('vertex_import.description')}</div>
-          <Input
-            label={t('vertex_import.location_label')}
-            hint={t('vertex_import.location_hint')}
-            value={vertexState.location}
-            onChange={(e) =>
-              setVertexState((prev) => ({
-                ...prev,
-                location: e.target.value
-              }))
+        {!donate && (
+          <Card
+            title={
+              <span className={styles.cardTitle}>
+                <img src={iconVertex} alt="" className={styles.cardTitleIcon} />
+                {t('vertex_import.title')}
+              </span>
             }
-            placeholder={t('vertex_import.location_placeholder')}
-          />
-          <div className="form-group">
-            <label>{t('vertex_import.file_label')}</label>
-            <div className={styles.filePicker}>
-              <Button variant="secondary" size="sm" onClick={handleVertexFilePick}>
-                {t('vertex_import.choose_file')}
+            extra={
+              <Button onClick={handleVertexImport} loading={vertexState.loading}>
+                {t('vertex_import.import_button')}
               </Button>
-              <div
-                className={`${styles.fileName} ${
-                  vertexState.fileName ? '' : styles.fileNamePlaceholder
-                }`.trim()}
-              >
-                {vertexState.fileName || t('vertex_import.file_placeholder')}
-              </div>
-            </div>
-            <div className="hint">{t('vertex_import.file_hint')}</div>
-            <input
-              ref={vertexFileInputRef}
-              type="file"
-              accept=".json,application/json"
-              style={{ display: 'none' }}
-              onChange={handleVertexFileChange}
+            }
+          >
+            <div className="hint">{t('vertex_import.description')}</div>
+            <Input
+              label={t('vertex_import.location_label')}
+              hint={t('vertex_import.location_hint')}
+              value={vertexState.location}
+              onChange={(e) =>
+                setVertexState((prev) => ({
+                  ...prev,
+                  location: e.target.value
+                }))
+              }
+              placeholder={t('vertex_import.location_placeholder')}
             />
-          </div>
-          {vertexState.error && (
-            <div className="status-badge error" style={{ marginTop: 8 }}>
-              {vertexState.error}
-            </div>
-          )}
-          {vertexState.result && (
-            <div className="connection-box" style={{ marginTop: 12 }}>
-              <div className="label">{t('vertex_import.result_title')}</div>
-              <div className="key-value-list">
-                {vertexState.result.projectId && (
-                  <div className="key-value-item">
-                    <span className="key">{t('vertex_import.result_project')}</span>
-                    <span className="value">{vertexState.result.projectId}</span>
-                  </div>
-                )}
-                {vertexState.result.email && (
-                  <div className="key-value-item">
-                    <span className="key">{t('vertex_import.result_email')}</span>
-                    <span className="value">{vertexState.result.email}</span>
-                  </div>
-                )}
-                {vertexState.result.location && (
-                  <div className="key-value-item">
-                    <span className="key">{t('vertex_import.result_location')}</span>
-                    <span className="value">{vertexState.result.location}</span>
-                  </div>
-                )}
-                {vertexState.result.authFile && (
-                  <div className="key-value-item">
-                    <span className="key">{t('vertex_import.result_file')}</span>
-                    <span className="value">{vertexState.result.authFile}</span>
-                  </div>
-                )}
+            <div className="form-group">
+              <label>{t('vertex_import.file_label')}</label>
+              <div className={styles.filePicker}>
+                <Button variant="secondary" size="sm" onClick={handleVertexFilePick}>
+                  {t('vertex_import.choose_file')}
+                </Button>
+                <div
+                  className={`${styles.fileName} ${
+                    vertexState.fileName ? '' : styles.fileNamePlaceholder
+                  }`.trim()}
+                >
+                  {vertexState.fileName || t('vertex_import.file_placeholder')}
+                </div>
               </div>
+              <div className="hint">{t('vertex_import.file_hint')}</div>
+              <input
+                ref={vertexFileInputRef}
+                type="file"
+                accept=".json,application/json"
+                style={{ display: 'none' }}
+                onChange={handleVertexFileChange}
+              />
             </div>
-          )}
-        </Card>
+            {vertexState.error && (
+              <div className="status-badge error" style={{ marginTop: 8 }}>
+                {vertexState.error}
+              </div>
+            )}
+            {vertexState.result && (
+              <div className="connection-box" style={{ marginTop: 12 }}>
+                <div className="label">{t('vertex_import.result_title')}</div>
+                <div className="key-value-list">
+                  {vertexState.result.projectId && (
+                    <div className="key-value-item">
+                      <span className="key">{t('vertex_import.result_project')}</span>
+                      <span className="value">{vertexState.result.projectId}</span>
+                    </div>
+                  )}
+                  {vertexState.result.email && (
+                    <div className="key-value-item">
+                      <span className="key">{t('vertex_import.result_email')}</span>
+                      <span className="value">{vertexState.result.email}</span>
+                    </div>
+                  )}
+                  {vertexState.result.location && (
+                    <div className="key-value-item">
+                      <span className="key">{t('vertex_import.result_location')}</span>
+                      <span className="value">{vertexState.result.location}</span>
+                    </div>
+                  )}
+                  {vertexState.result.authFile && (
+                    <div className="key-value-item">
+                      <span className="key">{t('vertex_import.result_file')}</span>
+                      <span className="value">{vertexState.result.authFile}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </Card>
+        )}
 
         {/* iFlow Cookie 登录 */}
-        <Card
-          title={
-            <span className={styles.cardTitle}>
-              <img src={iconIflow} alt="" className={styles.cardTitleIcon} />
-              {t('auth_login.iflow_cookie_title')}
-            </span>
-          }
-          extra={
-            <Button onClick={submitIflowCookie} loading={iflowCookie.loading}>
-              {t('auth_login.iflow_cookie_button')}
-            </Button>
-          }
-        >
-          <div className="hint">{t('auth_login.iflow_cookie_hint')}</div>
-          <div className="hint" style={{ marginTop: 4 }}>
-            {t('auth_login.iflow_cookie_key_hint')}
-          </div>
-          <div className="form-item" style={{ marginTop: 12 }}>
-            <label className="label">{t('auth_login.iflow_cookie_label')}</label>
-            <Input
-              value={iflowCookie.cookie}
-              onChange={(e) => setIflowCookie((prev) => ({ ...prev, cookie: e.target.value }))}
-              placeholder={t('auth_login.iflow_cookie_placeholder')}
-            />
-          </div>
-          {iflowCookie.error && (
-            <div
-              className={`status-badge ${iflowCookie.errorType === 'warning' ? 'warning' : 'error'}`}
-              style={{ marginTop: 8 }}
-            >
-              {iflowCookie.errorType === 'warning'
-                ? t('auth_login.iflow_cookie_status_duplicate')
-                : t('auth_login.iflow_cookie_status_error')}{' '}
-              {iflowCookie.error}
+        {!donate && (
+          <Card
+            title={
+              <span className={styles.cardTitle}>
+                <img src={iconIflow} alt="" className={styles.cardTitleIcon} />
+                {t('auth_login.iflow_cookie_title')}
+              </span>
+            }
+            extra={
+              <Button onClick={submitIflowCookie} loading={iflowCookie.loading}>
+                {t('auth_login.iflow_cookie_button')}
+              </Button>
+            }
+          >
+            <div className="hint">{t('auth_login.iflow_cookie_hint')}</div>
+            <div className="hint" style={{ marginTop: 4 }}>
+              {t('auth_login.iflow_cookie_key_hint')}
             </div>
-          )}
-          {iflowCookie.result && iflowCookie.result.status === 'ok' && (
-            <div className="connection-box" style={{ marginTop: 12 }}>
-              <div className="label">{t('auth_login.iflow_cookie_result_title')}</div>
-              <div className="key-value-list">
-                {iflowCookie.result.email && (
-                  <div className="key-value-item">
-                    <span className="key">{t('auth_login.iflow_cookie_result_email')}</span>
-                    <span className="value">{iflowCookie.result.email}</span>
-                  </div>
-                )}
-                {iflowCookie.result.expired && (
-                  <div className="key-value-item">
-                    <span className="key">{t('auth_login.iflow_cookie_result_expired')}</span>
-                    <span className="value">{iflowCookie.result.expired}</span>
-                  </div>
-                )}
-                {iflowCookie.result.saved_path && (
-                  <div className="key-value-item">
-                    <span className="key">{t('auth_login.iflow_cookie_result_path')}</span>
-                    <span className="value">{iflowCookie.result.saved_path}</span>
-                  </div>
-                )}
-                {iflowCookie.result.type && (
-                  <div className="key-value-item">
-                    <span className="key">{t('auth_login.iflow_cookie_result_type')}</span>
-                    <span className="value">{iflowCookie.result.type}</span>
-                  </div>
-                )}
+            <div className="form-item" style={{ marginTop: 12 }}>
+              <label className="label">{t('auth_login.iflow_cookie_label')}</label>
+              <Input
+                value={iflowCookie.cookie}
+                onChange={(e) => setIflowCookie((prev) => ({ ...prev, cookie: e.target.value }))}
+                placeholder={t('auth_login.iflow_cookie_placeholder')}
+              />
+            </div>
+            {iflowCookie.error && (
+              <div
+                className={`status-badge ${iflowCookie.errorType === 'warning' ? 'warning' : 'error'}`}
+                style={{ marginTop: 8 }}
+              >
+                {iflowCookie.errorType === 'warning'
+                  ? t('auth_login.iflow_cookie_status_duplicate')
+                  : t('auth_login.iflow_cookie_status_error')}{' '}
+                {iflowCookie.error}
               </div>
-            </div>
-          )}
-        </Card>
+            )}
+            {iflowCookie.result && iflowCookie.result.status === 'ok' && (
+              <div className="connection-box" style={{ marginTop: 12 }}>
+                <div className="label">{t('auth_login.iflow_cookie_result_title')}</div>
+                <div className="key-value-list">
+                  {iflowCookie.result.email && (
+                    <div className="key-value-item">
+                      <span className="key">{t('auth_login.iflow_cookie_result_email')}</span>
+                      <span className="value">{iflowCookie.result.email}</span>
+                    </div>
+                  )}
+                  {iflowCookie.result.expired && (
+                    <div className="key-value-item">
+                      <span className="key">{t('auth_login.iflow_cookie_result_expired')}</span>
+                      <span className="value">{iflowCookie.result.expired}</span>
+                    </div>
+                  )}
+                  {iflowCookie.result.saved_path && (
+                    <div className="key-value-item">
+                      <span className="key">{t('auth_login.iflow_cookie_result_path')}</span>
+                      <span className="value">{iflowCookie.result.saved_path}</span>
+                    </div>
+                  )}
+                  {iflowCookie.result.type && (
+                    <div className="key-value-item">
+                      <span className="key">{t('auth_login.iflow_cookie_result_type')}</span>
+                      <span className="value">{iflowCookie.result.type}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </Card>
+        )}
       </div>
     </div>
   );
