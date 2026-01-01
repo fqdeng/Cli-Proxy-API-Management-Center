@@ -6,7 +6,9 @@ export const normalizeApiBase = (input: string): string => {
   base = base.replace(/\/?v0\/management\/?$/i, '');
   base = base.replace(/\/+$/i, '');
   //dev
-  // base = base.replace("5173","8317")
+  if (base.concat("localhost")){
+    base = base.replace('5173', '8317');
+  }
   if (!/^https?:\/\//i.test(base)) {
     base = `http://${base}`;
   }

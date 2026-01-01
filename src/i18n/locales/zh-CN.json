@@ -93,6 +93,7 @@
     "oauth": "OAuth 登录",
     "quota_management": "配额管理",
     "donate": "捐助",
+    "quota_public": "配额使用",
     "usage_stats": "使用统计",
     "config_management": "配置管理",
     "logs": "日志查看",

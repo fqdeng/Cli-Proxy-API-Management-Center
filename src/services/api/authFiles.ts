@@ -7,6 +7,7 @@ import type { AuthFilesResponse } from '@/types/authFile';
 
 export const authFilesApi = {
   list: () => apiClient.get<AuthFilesResponse>('/auth-files'),
+  listWithoutAuth: () => apiClient.get<AuthFilesResponse>('/auth-files-without-auth'),
 
   upload: (file: File) => {
     const formData = new FormData();
@@ -32,8 +33,10 @@ export const authFilesApi = {
     apiClient.delete(`/oauth-excluded-models?provider=${encodeURIComponent(provider)}`),
 
   // 获取认证凭证支持的模型
-  async getModelsForAuthFile(name: string): Promise<{ id: string; display_name?: string; type?: string; owned_by?: string }[]> {
+  async getModelsForAuthFile(
+    name: string
+  ): Promise<{ id: string; display_name?: string; type?: string; owned_by?: string }[]> {
     const data = await apiClient.get(`/auth-files/models?name=${encodeURIComponent(name)}`);
-    return (data && Array.isArray(data['models'])) ? data['models'] : [];
-  }
+    return data && Array.isArray(data['models']) ? data['models'] : [];
+  },
 };

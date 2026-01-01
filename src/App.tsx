@@ -18,6 +18,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { ProtectedRoute } from '@/router/ProtectedRoute';
 import { useAuthStore, useLanguageStore, useThemeStore } from '@/stores';
 import { Donate } from '@/pages/Donate.tsx';
+import { QuotaPagePublic } from '@/pages/QuotaPagePublic.tsx';
 
 const SPLASH_DURATION = 1500;
 const SPLASH_FADE_DURATION = 400;
@@ -74,6 +75,7 @@ function App() {
     <HashRouter>
       <NotificationContainer />
       <Routes>
+        <Route path="/quota-public" element={<QuotaPagePublic />} />
         <Route path="/donate" element={<Donate />} />
         <Route path="/login" element={<LoginPage />} />
         <Route

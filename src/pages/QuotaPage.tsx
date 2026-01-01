@@ -8,7 +8,7 @@ import { apiCallApi, authFilesApi, getApiCallErrorMessage } from '@/services/api
 import type {
   AntigravityQuotaGroup,
   AntigravityQuotaState,
-  AuthFileItem,
+  AuthFileItem, AuthFilesResponse,
   CodexQuotaState,
   CodexQuotaWindow,
   GeminiCliQuotaBucketState,
@@ -799,7 +799,11 @@ function isRuntimeOnlyAuthFile(file: AuthFileItem): boolean {
   return false;
 }
 
-export function QuotaPage() {
+interface QuotaPageProps {
+  publicUsed?: boolean;
+}
+
+export function QuotaPage({publicUsed=false}:QuotaPageProps) {
   const { t } = useTranslation();
   const connectionStatus = useAuthStore((state) => state.connectionStatus);
   const resolvedTheme: ResolvedTheme = useThemeStore((state) => state.resolvedTheme);
@@ -844,7 +848,12 @@ export function QuotaPage() {
     setLoading(true);
     setError('');
     try {
-      const data = await authFilesApi.list();
+      let data: AuthFilesResponse;
+      if (publicUsed) {
+        data = await authFilesApi.listWithoutAuth();
+      } else {
+        data = await authFilesApi.list();
+      }
       setFiles(data?.files || []);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : t('notification.refresh_failed');
@@ -902,7 +911,7 @@ export function QuotaPage() {
             url,
             header: { ...ANTIGRAVITY_REQUEST_HEADERS },
             data: '{}'
-          });
+          },publicUsed);
 
           if (result.statusCode < 200 || result.statusCode >= 300) {
             lastError = getApiCallErrorMessage(result);
@@ -1099,7 +1108,7 @@ export function QuotaPage() {
           method: 'GET',
           url: CODEX_USAGE_URL,
           header: requestHeader
-        });
+        },publicUsed);
         if (result.statusCode < 200 || result.statusCode >= 300) {
           throw createStatusError(getApiCallErrorMessage(result), result.statusCode);
         }
@@ -1201,13 +1210,16 @@ export function QuotaPage() {
         throw new Error(t('gemini_cli_quota.missing_project_id'));
       }
 
-      const result = await apiCallApi.request({
-        authIndex,
-        method: 'POST',
-        url: GEMINI_CLI_QUOTA_URL,
-        header: { ...GEMINI_CLI_REQUEST_HEADERS },
-        data: JSON.stringify({ project: projectId })
-      });
+      const result = await apiCallApi.request(
+        {
+          authIndex,
+          method: 'POST',
+          url: GEMINI_CLI_QUOTA_URL,
+          header: { ...GEMINI_CLI_REQUEST_HEADERS },
+          data: JSON.stringify({ project: projectId }),
+        },
+        publicUsed
+      );
 
       if (result.statusCode < 200 || result.statusCode >= 300) {
         throw createStatusError(getApiCallErrorMessage(result), result.statusCode);
@@ -1785,7 +1797,7 @@ export function QuotaPage() {
         )}
       </Card>
 
-      <Card
+      {!publicUsed &&<Card
         title={t('codex_quota.title')}
         extra={
           <div className={styles.headerActions}>
@@ -1870,8 +1882,9 @@ export function QuotaPage() {
           </>
         )}
       </Card>
+      }
 
-      <Card
+      {!publicUsed && <Card
         title={t('gemini_cli_quota.title')}
         extra={
           <div className={styles.headerActions}>
@@ -1961,6 +1974,7 @@ export function QuotaPage() {
           </>
         )}
       </Card>
+      }
     </div>
   );
 }
