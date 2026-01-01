@@ -842,7 +842,7 @@ export function QuotaPage({publicUsed=false}:QuotaPageProps) {
   const geminiCliLoadingRef = useRef(false);
   const geminiCliRequestIdRef = useRef(0);
 
-  const disableControls = connectionStatus !== 'connected';
+  const disableControls = connectionStatus !== 'connected' && !publicUsed;
 
   const loadFiles = useCallback(async () => {
     setLoading(true);
