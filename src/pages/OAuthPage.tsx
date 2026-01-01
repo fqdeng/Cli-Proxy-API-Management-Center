@@ -322,7 +322,7 @@ export function OAuthPage({  donate=false }: OAuthPageProps) {
             <a href="http://api.jonwinters.pw" target="_blank" rel="noopener noreferrer">
               http://api.jonwinters.pw
             </a>{' '}
-            密码默认test 每日会自动重置额度
+            密码默认testtest 每日会自动重置额度
           </div>
         )}
       </div>
