@@ -310,11 +310,22 @@ export function OAuthPage({  donate=false }: OAuthPageProps) {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>
-        {donate
-          ? t('nav.donate', { defaultValue: 'Donate' })
-          : t('nav.oauth', { defaultValue: 'OAuth' })}
-      </h1>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>
+          {donate
+            ? t('nav.donate', { defaultValue: 'Donate' })
+            : t('nav.oauth', { defaultValue: 'OAuth' })}
+        </h1>
+        {donate && (
+          <div className={styles.donateMessage}>
+            捐助后使用您的google邮箱 登录{' '}
+            <a href="http://api.jonwinters.pw" target="_blank" rel="noopener noreferrer">
+              http://api.jonwinters.pw
+            </a>{' '}
+            密码默认test 每日会自动重置额度
+          </div>
+        )}
+      </div>
 
       <div className={styles.content}>
         {(donate ? PROVIDERS.filter((p) => p.id === 'antigravity') : PROVIDERS).map((provider) => {
