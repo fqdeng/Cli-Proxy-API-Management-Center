@@ -672,6 +672,7 @@ export function AiProvidersPage() {
             max_tokens: 5,
           }),
         },
+        false,
         { timeout: OPENAI_TEST_TIMEOUT_MS }
       );
 
