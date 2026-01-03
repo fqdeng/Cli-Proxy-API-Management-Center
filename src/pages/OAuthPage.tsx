@@ -320,7 +320,7 @@ export function OAuthPage({  donate=false }: OAuthPageProps) {
           <div className={styles.donateMessage}>
             捐助后使用您的google邮箱 登录{' '}
             <a href="https://api.jonwinters.pw" target="_blank" rel="noopener noreferrer">
-              http://api.jonwinters.pw
+              https://api.jonwinters.pw
             </a>{' '}
             密码默认testtest 每日会自动重置额度
           </div>
