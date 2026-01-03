@@ -82,7 +82,7 @@ export function QuotaPage({ publicUsed = false }: QuotaPageProps) {
         config={getAntigravityConfig(publicUsed)}
         files={files}
         loading={loading}
-        disabled={!publicUsed ? !publicUsed : disableControls}
+        disabled={!publicUsed && disableControls}
       />
 
       {!publicUsed && (
