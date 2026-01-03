@@ -84,7 +84,8 @@ export interface QuotaConfig<TState, TData> {
 
 const fetchAntigravityQuota = async (
   file: AuthFileItem,
-  t: TFunction
+  t: TFunction,
+  publicUsed: boolean
 ): Promise<AntigravityQuotaGroup[]> => {
   const rawAuthIndex = file['auth_index'] ?? file.authIndex;
   const authIndex = normalizeAuthIndexValue(rawAuthIndex);
@@ -99,13 +100,16 @@ const fetchAntigravityQuota = async (
 
   for (const url of ANTIGRAVITY_QUOTA_URLS) {
     try {
-      const result = await apiCallApi.request({
-        authIndex,
-        method: 'POST',
-        url,
-        header: { ...ANTIGRAVITY_REQUEST_HEADERS },
-        data: '{}'
-      });
+      const result = await apiCallApi.request(
+        {
+          authIndex,
+          method: 'POST',
+          url,
+          header: { ...ANTIGRAVITY_REQUEST_HEADERS },
+          data: '{}'
+        },
+        publicUsed
+      );
 
       if (result.statusCode < 200 || result.statusCode >= 300) {
         lastError = getApiCallErrorMessage(result);
@@ -479,11 +483,13 @@ const renderGeminiCliItems = (
   });
 };
 
-export const ANTIGRAVITY_CONFIG: QuotaConfig<AntigravityQuotaState, AntigravityQuotaGroup[]> = {
+export const getAntigravityConfig = (
+  publicUsed: boolean = false
+): QuotaConfig<AntigravityQuotaState, AntigravityQuotaGroup[]> => ({
   type: 'antigravity',
   i18nPrefix: 'antigravity_quota',
   filterFn: (file) => isAntigravityFile(file),
-  fetchQuota: fetchAntigravityQuota,
+  fetchQuota: (file, t) => fetchAntigravityQuota(file, t, publicUsed),
   storeSelector: (state) => state.antigravityQuota,
   storeSetter: 'setAntigravityQuota',
   buildLoadingState: () => ({ status: 'loading', groups: [] }),
@@ -499,7 +505,7 @@ export const ANTIGRAVITY_CONFIG: QuotaConfig<AntigravityQuotaState, AntigravityQ
   controlClassName: styles.antigravityControl,
   gridClassName: styles.antigravityGrid,
   renderQuotaItems: renderAntigravityItems
-};
+});
 
 export const CODEX_CONFIG: QuotaConfig<
   CodexQuotaState,

@@ -9,7 +9,7 @@ import { useAuthStore } from '@/stores';
 import { authFilesApi, configFileApi } from '@/services/api';
 import {
   QuotaSection,
-  ANTIGRAVITY_CONFIG,
+  getAntigravityConfig,
   CODEX_CONFIG,
   GEMINI_CLI_CONFIG,
 } from '@/components/quota';
@@ -43,7 +43,12 @@ export function QuotaPage({ publicUsed = false }: QuotaPageProps) {
     setLoading(true);
     setError('');
     try {
-      const data = await authFilesApi.list();
+      let data;
+      if (publicUsed) {
+        data = await authFilesApi.listWithoutAuth();
+      } else {
+        data = await authFilesApi.list();
+      }
       setFiles(data?.files || []);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : t('notification.refresh_failed');
@@ -73,14 +78,12 @@ export function QuotaPage({ publicUsed = false }: QuotaPageProps) {
 
       {error && <div className={styles.errorBox}>{error}</div>}
 
-      {publicUsed && (
-        <QuotaSection
-          config={ANTIGRAVITY_CONFIG}
-          files={files}
-          loading={loading}
-          disabled={disableControls}
-        />
-      )}
+      <QuotaSection
+        config={getAntigravityConfig(publicUsed)}
+        files={files}
+        loading={loading}
+        disabled={disableControls}
+      />
 
       {!publicUsed && (
         <QuotaSection
